@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { addCreator } from '../../redux/actions'
 
 
-const matrix = function setMatrix() {
+var matrix = (function setMatrix() {
   let array = [];
 
   for (let i = 0; i < 10; i++) {
@@ -16,7 +16,13 @@ const matrix = function setMatrix() {
 
     }
   }
-}
+
+  return array;
+
+})();
+
+
+console.log(matrix);
 
 const INITIAL_STATE = {
   matrix: matrix,
@@ -30,30 +36,25 @@ class Table extends React.Component {
   }
 
   componentDidMount() {
-    let matrix = [];
+   
 
-    for (let i = 0; i < this.state.rows; i++) {
-      matrix[i] = [];
-      for (let j = 0; j < this.state.cols; j++) {
-
-        matrix[i][j] = Math.floor(Math.random() * 100);
-
-      }
-    }
-
-    this.setState(state => {
-      return {
-        matrix: matrix
-      }
-    });
 
   }
 
-  onUpdateItem = i => {
+  onUpdateItem = (rowIndex, colIndex) => {
+
+    console.log(rowIndex);
+    console.log(colIndex);
+
+
     this.setState(state => {
-      const matrix = state.matrix.map((item, j) => {
+      const matrix = state.matrix.map((item, row) => {
+        
+        item.map((item, col) => {
 
+          
 
+        })
 
       });
 
@@ -61,8 +62,6 @@ class Table extends React.Component {
         matrix,
       };
     });
-
-    console.log(this.state.matrix);
   };
 
 
@@ -73,14 +72,14 @@ class Table extends React.Component {
       <table className="table table-bordered">
         <tbody>
 
-            {this.state.matrix.map((item, index) => {
+            {this.state.matrix.map((item, rowIndex) => {
                   return (
-                    <tr key={index}>
-                        {item.map((item, index) => {
+                    <tr key={rowIndex}>
+                        {item.map((item, colIndex) => {
                             return (
-                              <td key={index}>
+                              <td key={colIndex}>
                                   {item}
-                                  <button type="button" onClick={() => this.onUpdateItem(index)}>Add 1</button>
+                                  <button type="button" onClick={() => this.onUpdateItem(rowIndex, colIndex)}>Add 1</button>
                               </td>
                             )
                           }
