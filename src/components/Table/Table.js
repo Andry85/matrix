@@ -5,14 +5,28 @@ import { connect } from 'react-redux'
 import { addCreator } from '../../redux/actions'
 
 
+const matrix = function setMatrix() {
+  let array = [];
+
+  for (let i = 0; i < 10; i++) {
+    array[i] = [];
+    for (let j = 0; j < 10; j++) {
+
+      array[i][j] = Math.floor(Math.random() * 100);
+
+    }
+  }
+}
+
+const INITIAL_STATE = {
+  matrix: matrix,
+};
+
+
 class Table extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
-      rows: 10,
-      cols: 10,
-      matrix: []
-    }
+    this.state = INITIAL_STATE;
   }
 
   componentDidMount() {
@@ -32,17 +46,17 @@ class Table extends React.Component {
         matrix: matrix
       }
     });
-      
+
   }
 
   onUpdateItem = i => {
     this.setState(state => {
       const matrix = state.matrix.map((item, j) => {
 
- 
+
 
       });
- 
+
       return {
         matrix,
       };
@@ -53,12 +67,12 @@ class Table extends React.Component {
 
 
   render() {
-  
-    
+
+
     return (
       <table className="table table-bordered">
         <tbody>
-           
+
             {this.state.matrix.map((item, index) => {
                   return (
                     <tr key={index}>
@@ -76,8 +90,6 @@ class Table extends React.Component {
                 }
               )}
 
-
-          
         </tbody>
       </table>
     );
@@ -99,4 +111,3 @@ export default Table;
 // }
 
 // export default  connect(mapStateToProps, mapDispatchToProps)(Table);
-
