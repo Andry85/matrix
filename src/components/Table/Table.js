@@ -12,7 +12,10 @@ var matrix = (function setMatrix() {
     array[i] = [];
     for (let j = 0; j < 10; j++) {
 
-      array[i][j] = Math.floor(Math.random() * 100);
+      array[i][j] = {
+        value: Math.floor(Math.random() * 1000),
+        isActive: ''
+      };
 
     }
   }
@@ -36,36 +39,54 @@ class Table extends React.Component {
   }
 
   componentDidMount() {
-   
-
+  
 
   }
 
   onUpdateItem = (rowIndex, colIndex) => {
 
-    console.log(rowIndex);
-    console.log(colIndex);
-
-
     this.setState(state => {
-      const matrix = state.matrix.map((item, row) => {
-        
-        item.map((item, col) => {
+  
+      const matrix = state.matrix.map((item, i) => {
 
-          
+        const listItem = item.map((number, j) => {
 
-        })
+          if (number.value === state.matrix[rowIndex][colIndex].value && i === rowIndex && j === colIndex) {
+            number.value = number.value + 1;
+            return number;
+          } else {
+            return number;
+          }
+        });
 
+        return listItem;
       });
 
       return {
         matrix,
       };
     });
+
   };
+
+  onHover = (rowIndex, colIndex) => {
+    
+  }
 
 
   render() {
+
+    let avrArr = [];
+    this.state.matrix.map((item) => {
+      item.map((item, colIndex) => {
+        if (avrArr[colIndex] === undefined) {
+          avrArr[colIndex] = item.value;
+        } else {
+          avrArr[colIndex] = avrArr[colIndex] + item.value;
+        }
+      })
+
+    })
 
 
     return (
@@ -73,21 +94,44 @@ class Table extends React.Component {
         <tbody>
 
             {this.state.matrix.map((item, rowIndex) => {
-                  return (
-                    <tr key={rowIndex}>
-                        {item.map((item, colIndex) => {
-                            return (
-                              <td key={colIndex}>
-                                  {item}
-                                  <button type="button" onClick={() => this.onUpdateItem(rowIndex, colIndex)}>Add 1</button>
-                              </td>
-                            )
-                          }
-                        )}
-                    </tr>
-                  )
+                let summa = 0;
+                return (
+                  <tr key={rowIndex}>
+                      {item.map((item, colIndex) => {
+                          
+                          summa = summa + item.value;
+                          
+                          return (
+                            <td 
+                            key={colIndex} 
+                            onClick={() => this.onUpdateItem(rowIndex, colIndex)}
+                            onMouseOver={() => this.onHover(rowIndex, colIndex)}
+                            >
+                                {item.value}
+                            </td>
+                          )
+                        }
+                      )}              
+                      <td>
+                          {summa}
+                      </td>  
+                  </tr>
+                )
+              }
+            )}
+
+            <tr>
+
+              {avrArr.map((item, i) => {       
+                let avrItem = item/avrArr.length; 
+                return (
+                  <td key={i}>
+                      {avrItem}
+                  </td>
+                )
                 }
               )}
+            </tr>
 
         </tbody>
       </table>
