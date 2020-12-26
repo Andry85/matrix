@@ -1,21 +1,28 @@
-import styles from './Table.module.scss';
+import './Table.css';
 import React from 'react';
 
 import { connect } from 'react-redux'
 import { addCreator } from '../../redux/actions'
 
 
+
+
+let total = 0;
+
+
 var matrix = (function setMatrix() {
   let array = [];
-
+  
   for (let i = 0; i < 10; i++) {
     array[i] = [];
     for (let j = 0; j < 10; j++) {
 
       array[i][j] = {
-        value: Math.floor(Math.random() * 1000),
+        value: Math.floor(Math.random() * 10000),
         isActive: ''
       };
+
+      total = total + array[i][j].value;
 
     }
   }
@@ -25,10 +32,13 @@ var matrix = (function setMatrix() {
 })();
 
 
-console.log(matrix);
+
+
 
 const INITIAL_STATE = {
   matrix: matrix,
+  isvisible: [],
+  total: total
 };
 
 
@@ -38,23 +48,58 @@ class Table extends React.Component {
     this.state = INITIAL_STATE;
   }
 
-  componentDidMount() {
-  
-
-  }
 
   onUpdateItem = (rowIndex, colIndex) => {
 
+
+    this.setState(state => {
+
+      let totalSum = 0;
+  
+      let matrix = state.matrix.map((item, i) => {
+
+        item.map((number, j) => {
+
+          totalSum = totalSum + number.value;
+
+          if (number.value === state.matrix[rowIndex][colIndex].value && i === rowIndex && j === colIndex) {
+            number.value++;
+          }
+
+          return number;
+
+        });
+
+        return item;
+      });
+
+      return {
+        matrix: matrix,
+        total: totalSum
+      };
+    });
+
+    console.log(this.state);
+
+
+  };
+
+  onHover = (rowIndex, colIndex) => {
+
+    
     this.setState(state => {
   
       const matrix = state.matrix.map((item, i) => {
 
         const listItem = item.map((number, j) => {
 
-          if (number.value === state.matrix[rowIndex][colIndex].value && i === rowIndex && j === colIndex) {
-            number.value = number.value + 1;
+          let diff = state.matrix[rowIndex][colIndex].value - number.value;
+
+          if (diff < 100 && diff > -100) {
+            number.isActive = 'isactive';
             return number;
           } else {
+            number.isActive = '';
             return number;
           }
         });
@@ -67,12 +112,32 @@ class Table extends React.Component {
       };
     });
 
-  };
-
-  onHover = (rowIndex, colIndex) => {
     
   }
 
+  onSumRow = (rowIndex) => {
+      this.setState(state => {
+      
+        const isvisible = state.matrix.map((item, i) => {
+
+          if (i === rowIndex) {
+            state.isvisible[i] = 'visible';
+            return state.isvisible[i];
+          } else {
+            state.isvisible[i] = 'inVisible';
+            return state.isvisible[i];
+          }
+        
+
+        });
+
+      return {
+        isvisible,
+      };
+
+    });
+    
+  }
 
   render() {
 
@@ -84,9 +149,14 @@ class Table extends React.Component {
         } else {
           avrArr[colIndex] = avrArr[colIndex] + item.value;
         }
+        return item;
       })
+      return item;
 
-    })
+    });
+
+    console.log('render');
+
 
 
     return (
@@ -95,25 +165,31 @@ class Table extends React.Component {
 
             {this.state.matrix.map((item, rowIndex) => {
                 let summa = 0;
+
                 return (
                   <tr key={rowIndex}>
                       {item.map((item, colIndex) => {
                           
-                          summa = summa + item.value;
+                          summa = summa + item.value;    
                           
                           return (
-                            <td 
-                            key={colIndex} 
-                            onClick={() => this.onUpdateItem(rowIndex, colIndex)}
-                            onMouseOver={() => this.onHover(rowIndex, colIndex)}
+                            <td  
+                              className={item.isActive} 
+                              key={colIndex} 
+                              onClick={() => this.onUpdateItem(rowIndex, colIndex)}
+                              onMouseOver={() => this.onHover(rowIndex, colIndex)}
                             >
                                 {item.value}
                             </td>
                           )
                         }
                       )}              
-                      <td>
-                          {summa}
+                      <td  
+                        className={this.state.isvisible[rowIndex]} 
+                        onMouseOver={() => this.onSumRow(rowIndex)}
+                      >
+                          <strong>{summa}</strong>
+                          <span>{parseInt(summa/this.state.total * 100)} %</span>
                       </td>  
                   </tr>
                 )

@@ -1,0 +1,28 @@
+.table {
+    
+}
+
+.isactive {
+    background: green;
+    color: #fff;
+    cursor: pointer;
+}
+
+.table tr td span {
+    display: block;
+    visibility: hidden;
+    font-weight: bold;
+}
+
+.table tr td.visible span {
+    visibility: visible;
+}
+
+.table tr td.visible strong {
+    display: none;
+}
+.table tr td.visible {
+    background: orangered;
+    color: #fff;
+    cursor: pointer;
+}
