@@ -13,9 +13,9 @@ let total = 0;
 var matrix = (function setMatrix() {
   let array = [];
   
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 5; i++) {
     array[i] = [];
-    for (let j = 0; j < 10; j++) {
+    for (let j = 0; j < 5; j++) {
 
       array[i][j] = {
         value: Math.floor(Math.random() * 10000),
@@ -36,9 +36,9 @@ var matrix = (function setMatrix() {
 
 
 const INITIAL_STATE = {
-  matrix: matrix,
+  matrix,
   isvisible: [],
-  total: total
+  total
 };
 
 
@@ -49,93 +49,71 @@ class Table extends React.Component {
   }
 
 
+
   onUpdateItem = (rowIndex, colIndex) => {
 
-
-    this.setState(state => {
-
-      let totalSum = 0;
-  
-      let matrix = state.matrix.map((item, i) => {
-
-        item.map((number, j) => {
-
-          totalSum = totalSum + number.value;
-
-          if (number.value === state.matrix[rowIndex][colIndex].value && i === rowIndex && j === colIndex) {
-            number.value++;
-          }
-
-          return number;
-
-        });
-
-        return item;
+    let totalSum = 0;
+    let newMatrix = this.state.matrix.map((items, i) => {
+      items.map((number, j) => {
+        totalSum = totalSum + number.value;
+        if (number.value === this.state.matrix[rowIndex][colIndex].value && i === rowIndex && j === colIndex) {
+          number.value = number.value + 1;
+        }
+        return number;
       });
-
-      return {
-        matrix: matrix,
-        total: totalSum
-      };
+      return items;
     });
 
-    console.log(this.state);
+
+
+    this.setState((prevState) => ({ 
+      matrix: newMatrix,
+      total: totalSum
+     }));
+
+    
 
 
   };
 
   onHover = (rowIndex, colIndex) => {
 
-    
-    this.setState(state => {
-  
-      const matrix = state.matrix.map((item, i) => {
-
-        const listItem = item.map((number, j) => {
-
-          let diff = state.matrix[rowIndex][colIndex].value - number.value;
-
-          if (diff < 100 && diff > -100) {
-            number.isActive = 'isactive';
-            return number;
-          } else {
-            number.isActive = '';
-            return number;
-          }
-        });
-
-        return listItem;
+    const matrix = this.state.matrix.map((item, i) => {
+      const listItem = item.map((number, j) => {
+        let diff = this.state.matrix[rowIndex][colIndex].value - number.value;
+        if (diff < 100 && diff > -100) {
+          number.isActive = 'isactive';
+          return number;
+        } else {
+          number.isActive = '';
+          return number;
+        }
       });
-
-      return {
-        matrix,
-      };
+      return listItem;
     });
 
+    this.setState((prevState) => ({ 
+      matrix
+    }));
     
   }
 
   onSumRow = (rowIndex) => {
-      this.setState(state => {
-      
-        const isvisible = state.matrix.map((item, i) => {
 
-          if (i === rowIndex) {
-            state.isvisible[i] = 'visible';
-            return state.isvisible[i];
-          } else {
-            state.isvisible[i] = 'inVisible';
-            return state.isvisible[i];
-          }
-        
-
-        });
-
-      return {
-        isvisible,
-      };
-
+    const isvisible = this.state.matrix.map((item, i) => {
+      if (i === rowIndex) {
+        this.state.isvisible[i] = 'visible';
+        return this.state.isvisible[i];
+      } else {
+        this.state.isvisible[i] = 'inVisible';
+        return this.state.isvisible[i];
+      }
     });
+
+    this.setState((prevState) => ({ 
+      isvisible
+    }));
+
     
   }
 
@@ -154,9 +132,6 @@ class Table extends React.Component {
       return item;
 
     });
-
-    console.log('render');
-
 
 
     return (
