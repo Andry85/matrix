@@ -8,14 +8,19 @@
     cursor: pointer;
 }
 
+.table tr td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 15px;
+}
+
 .table tr td span {
-    display: block;
-    visibility: hidden;
+    display: none;
     font-weight: bold;
 }
 
 .table tr td.visible span {
-    visibility: visible;
+    display: block;
 }
 
 .table tr td.visible strong {
@@ -24,5 +29,24 @@
 .table tr td.visible {
     background: orangered;
     color: #fff;
+    cursor: pointer;
+}
+
+.table tr td.deleteRow {
+    background: red;
+    color: #fff;
+    cursor: pointer;
+}
+
+
+.table tr td.addRow {
+    background: pink;
+    color: #000;
+    cursor: pointer;
+}
+
+.table tr td.avrArr {
+    background: lightgoldenrodyellow;
+    color: #000;
     cursor: pointer;
 }

@@ -1,5 +1,6 @@
 import { createStore } from "redux";
 import rootReducer from "./reducers/index";
+import {INITIAL_STATE} from "./initialState";
 
 export default createStore(
     rootReducer,
